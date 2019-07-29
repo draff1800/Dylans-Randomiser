@@ -12,27 +12,42 @@ import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button rollButton;
     TextView resultsTextView;
+    TextView seekBarProgressTextView;
     SeekBar selectionSeekBar;
-
-    private View.OnClickListener rollButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int randomInt = new Random().nextInt(selectionSeekBar.getProgress()+1);
-            resultsTextView.setText(Integer.toString(randomInt));
-        }
-    };
+    Button rollButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rollButton = findViewById(R.id.rollButton);
         resultsTextView = findViewById(R.id.resultsTextView);
+        seekBarProgressTextView = findViewById(R.id.seekBarProgressTextView);
         selectionSeekBar = findViewById(R.id.selectionSeekBar);
+        rollButton = findViewById(R.id.rollButton);
 
-        rollButton.setOnClickListener(rollButtonClickListener);
+        selectionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                int val = (i * (seekBar.getWidth() - 2 * seekBar.getThumbOffset())) / seekBar.getMax();
+                seekBarProgressTextView.setText("" + i);
+                seekBarProgressTextView.setX(seekBar.getX() + val + seekBar.getThumbOffset() / 2);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        rollButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int randomInt = new Random().nextInt(selectionSeekBar.getProgress()+1);
+                resultsTextView.setText(Integer.toString(randomInt));
+            }
+        });
     }
 }
